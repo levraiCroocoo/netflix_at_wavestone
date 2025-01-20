@@ -1,18 +1,12 @@
-#!/bin/bash
 
-mongodb_directory="/etc/yum.repos.d/"
-# Check that the MongoDB repo exists
-mongodb_repo="${mongodb_directory}mongodb-org-7.0.repo"
 
-# If the MongoDB repo file does not exist, create it
-if [[ ! -f "$mongodb_repo" ]]; then
-    echo "[mongodb-org-7.0]
+# Création du fichier de dépôt MongoDB
+echo "[mongodb-org-8.0]
 name=MongoDB Repository
-baseurl=https://repo.mongodb.org/yum/amazon/2/mongodb-org/7.0/x86_64/
+baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/8.0/x86_64/
 gpgcheck=1
 enabled=1
-gpgkey=https://www.mongodb.org/static/pgp/server-7.0.asc" | sudo tee $mongodb_repo > /dev/null
-fi
+gpgkey=https://pgp.mongodb.com/server-8.0.asc" | sudo tee /etc/yum.repos.d/mongodb-org-8.0.repo
 
 # Install MongoDB packages
 sudo yum install -y mongodb-org
