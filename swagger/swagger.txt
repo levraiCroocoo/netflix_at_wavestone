@@ -1,0 +1,283 @@
+openapi: 3.0.3
+info:
+  title: Netflix at Wavestone
+  description: |-
+    Ce swagger présente une implémentation simple de ce que pourrait être l'API de Netflix. Il fait partie d'une formation API chez Wavestone ayant pour but de familiariser les consultants avec le sujet des APIs. Ce swagger montre les principaux concepts d'un swagger d'API, notamment les endpoints, les paramètres, la gestion des erreurs et les réponses aux requêtes. 
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: antoine.thirion@wavestone.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+
+
+# The tags correspond to the name of the sections
+tags:
+  #- name: Scriptwriters
+    #description: Endpoints related to "scriptwriters" resource
+  - name: Series
+    description: Endpoints related to "series" resource
+  #- name: Episodes
+    # description: Endpoints related to "episodes" resource
+    
+    
+# The paths correspond to the endpoints    
+paths: 
+
+  /series:
+  # GET /series
+    get:
+      tags:
+        - Series
+      summary: Finds all series
+      description: "A list of available series"
+      operationId: getAllSeries
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Serie"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInvalidRequest"
+    
+    # POST /series            
+    post:
+      tags:
+        - Series
+      summary: Adds a new serie to the application
+      description: Adds the specified serie to the application
+      operationId: addSerie
+      requestBody:
+        required: true
+        description: Create a new serie in the application
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Serie"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Serie"
+        '405':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInvalidInput"
+
+
+  /series/{serie_id}:
+  # GET /series/{serie_id}
+    get:
+      tags:
+        - Series
+      summary: Finds serie by ID
+      description: Returns a single serie corresponding to the id in the path
+      operationId: getSerieById
+      parameters:
+        - name: serie_id
+          required: true
+          in: path
+          description: ID of the serie to return
+          schema:
+            type: integer
+          example:
+            serie_id: 3
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Serie"
+        '400':
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInvalidID"
+        '404':
+          description: Serie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorItemNotFound"
+    
+    
+    # PUT /series/{serie_id}      
+    put:
+      tags:
+        - Series
+      summary: Updates an existing serie
+      description: Updates an existing serie by its Id
+      operationId: updateSerie
+      parameters:
+        - name: serie_id
+          required: true
+          in: path
+          description: ID of the serie to return
+          schema:
+            type: integer
+          example:
+            serie_id: 3
+      requestBody:
+        required: true
+        description: Update an existent serie in the application
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Serie"
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Serie"
+        '400':
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInvalidID"
+        '404':
+          description: Serie not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorItemNotFound"
+        '405':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInvalidInput"
+
+  
+    # DELETE /series/{serie_id}  
+    delete:
+      tags:
+        - Series
+      summary: Deletes a serie
+      description: Deletes a serie by its ID
+      operationId: deleteSerie
+      parameters:
+        - name: serie_id
+          required: true
+          in: path
+          description: ID of the serie to return
+          schema:
+            type: integer
+          example:
+            serie_id: 3
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorInvalidID"
+  
+  
+components:
+  schemas:
+    Serie:
+      type: object
+      properties:
+        _id: 
+          type: integer
+        name: 
+          type: string
+        scritpwriter:
+          type: string
+        year:
+          type: integer
+        genre: 
+          type: array
+          items:
+            type: string
+        nb_seasons:
+          type: integer
+        nb_episodes:
+          type: integer
+        episodes: 
+          type: array
+          items:
+            type: integer
+        description: 
+          type: string
+      example:
+        _id: 1
+        name: "Lupin"
+        scriptwriter: "George Kay"
+        year: 2021
+        genre: ["Drame", "Policier", "Thriller", "Action"]
+        nb_seasons: 3
+        nb_episodes: 17
+        episodes: [1, 2]
+        description: "En 1995, le jeune Assane Diop est bouleversé par le suicide de son père, accusé d'un vol qu'il n'a pas commis. Vingt-cinq ans plus tard, Assane organise le vol d'un collier ayant appartenu à Marie-Antoinette d'Autriche. Le bijou, aujourd'hui exposé au musée du Louvre, appartenait à la riche famille Pellegrini. Il veut se venger de cette famille ayant accusé à tort son père, en s'inspirant de son personnage fétiche : le « gentleman cambrioleur » Arsène Lupin, utilisant la science de ce personnage aux multiples facettes imaginé par Maurice Leblanc pour échapper à la police. En parallèle de ses activités illégales, Assane tente également de s'occuper davantage de son fils Raoul, qui vit aujourd'hui avec son ex-petite amie Claire."
+          
+          
+    ErrorInvalidRequest:
+      type: object
+      properties:
+        error_id: 
+          type: integer
+        description: 
+          type: string
+      example:
+        error_id: 1
+        description: "Please check that the URL is correct"
+    
+    
+    ErrorInvalidInput:
+      type: object
+      properties:
+        error_id: 
+          type: integer
+        description: 
+          type: string
+      example:
+        error_id: 2
+        description: "Please check that the request body is correct and has all required fields"
+    
+    
+    ErrorInvalidID:
+      type: object
+      properties:
+        error_id: 
+          type: integer
+        description: 
+          type: string
+      example:
+        error_id: 3
+        description: "Please check that the serie_id is correct"
+    
+    
+    ErrorItemNotFound:
+      type: object
+      properties:
+        error_id: 
+          type: integer
+        description: 
+          type: string
+      example:
+        error_id: 4
+        description: "The serie with the given id was not found"
+    
+    
+  
+  
